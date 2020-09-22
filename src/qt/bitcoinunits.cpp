@@ -72,10 +72,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case LQX: return QString("Dash");
-            case mDASH: return QString("Milli-Dash (1 / 1" THIN_SP_UTF8 "000)");
-            case uDASH: return QString("Micro-Dash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-Dash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case LQX: return QString("LQX");
+            case mDASH: return QString("Milli-LQX (1 / 1" THIN_SP_UTF8 "000)");
+            case uDASH: return QString("Micro-LQX (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case duffs: return QString("Ten Nano-LQX (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
