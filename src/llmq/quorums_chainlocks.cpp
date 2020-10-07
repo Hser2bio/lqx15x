@@ -10,6 +10,7 @@
 
 #include "chain.h"
 #include "masternode/masternode-sync.h"
+#include "manager.h"
 #include "net_processing.h"
 #include "scheduler.h"
 #include "spork.h"
@@ -220,7 +221,7 @@ void CChainLocksHandler::CheckActiveState()
     bool fDIP0008Active;
     {
         LOCK(cs_main);
-        fDIP0008Active = VersionBitsState(chainActive.Tip()->pprev, Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0008, versionbitscache) == THRESHOLD_ACTIVE;
+        fDIP0008Active = upgradeMan.isDIP0008Active();
     }
 
     LOCK(cs);

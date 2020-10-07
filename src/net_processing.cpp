@@ -13,6 +13,7 @@
 #include "hash.h"
 #include "init.h"
 #include "validation.h"
+#include "manager.h"
 #include "merkleblock.h"
 #include "net.h"
 #include "netmessagemaker.h"
@@ -1831,12 +1832,12 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return false;
         }
 
-        if (nVersion < MIN_PEER_PROTO_VERSION)
+        if (nVersion < upgradeMan.minProtocolActive())
         {
             // disconnect from peers older than this proto version
             LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->GetId(), nVersion);
             connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                               strprintf("Version must be %d or greater", MIN_PEER_PROTO_VERSION)));
+                               strprintf("Version must be %d or greater", upgradeMan.minProtocolActive())));
             pfrom->fDisconnect = true;
             return false;
         }
@@ -1970,6 +1971,12 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
     }
 
     // At this point, the outgoing message serialization version can't change.
+    if (!upgradeMan.keepExistingClient(pfrom->nVersion)) {
+        LogPrintf("peer=%d using obsolete version %i now invalid; disconnecting\n", pfrom->GetId(), pfrom->nVersion);
+        pfrom->fDisconnect = true;
+        return false;
+    }
+
     const CNetMsgMaker msgMaker(pfrom->GetSendVersion());
 
     if (strCommand == NetMsgType::VERACK)

@@ -264,6 +264,8 @@ public:
         consensus.nPowDGWHeight = 20;
         consensus.nRuleChangeActivationThreshold = 1368; // 95% of 2016
         consensus.nMinerConfirmationWindow = 1440; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nMasternodeCollateral = 10000 * COIN;
+
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -346,7 +348,7 @@ public:
         consensus.llmqs[Consensus::LLMQ_50_60] = llmq50_60;
         consensus.llmqs[Consensus::LLMQ_400_60] = llmq400_60;
         consensus.llmqs[Consensus::LLMQ_400_85] = llmq400_85;
-        consensus.llmqTypeChainLocks = Consensus::LLMQ_400_60;
+        consensus.llmqTypeChainLocks = Consensus::LLMQ_50_60;
         consensus.llmqTypeInstantSend = Consensus::LLMQ_50_60;
 
         fDefaultConsistencyChecks = false;

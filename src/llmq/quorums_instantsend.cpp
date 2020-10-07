@@ -10,6 +10,7 @@
 #include "chainparams.h"
 #include "coins.h"
 #include "txmempool.h"
+#include "manager.h"
 #include "masternode/masternode-sync.h"
 #include "net_processing.h"
 #include "spork.h"
@@ -1128,7 +1129,7 @@ void CInstantSendManager::NotifyChainLock(const CBlockIndex* pindexChainLock)
 void CInstantSendManager::UpdatedBlockTip(const CBlockIndex* pindexNew)
 {
     // TODO remove this after DIP8 has activated
-    bool fDIP0008Active = VersionBitsState(pindexNew->pprev, Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0008, versionbitscache) == THRESHOLD_ACTIVE;
+    bool fDIP0008Active = upgradeMan.isDIP0008Active();
 
     if (sporkManager.IsSporkActive(SPORK_19_CHAINLOCKS_ENABLED) && fDIP0008Active) {
         // Nothing to do here. We should keep all islocks and let chainlocks handle them.

@@ -2745,9 +2745,7 @@ void CWallet::AvailableCoins(std::vector<COutput> &vCoins, bool fOnlySafe, const
                     if (CPrivateSend::IsCollateralAmount(pcoin->tx->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !CPrivateSend::IsDenominatedAmount(pcoin->tx->vout[i].nValue);
                 } else if(nCoinType == CoinType::ONLY_1000) {
-                    std::string strError;
-                    const COutPoint collateralOut(pcoin->tx->GetHash(), i);
-                    found = upgradeMan.isValidCollateral(collateralOut, strError);
+                    found = pcoin->tx->vout[i].nValue == Params().GetConsensus().nMasternodeCollateral;
                 } else if(nCoinType == CoinType::ONLY_PRIVATESEND_COLLATERAL) {
                     found = CPrivateSend::IsCollateralAmount(pcoin->tx->vout[i].nValue);
                 } else {
@@ -3338,9 +3336,7 @@ bool CWallet::SelectCoinsGroupedByAddresses(std::vector<CompactTallyItem>& vecTa
             if(fAnonymizable) {
                 // ignore collaterals
                 if(CPrivateSend::IsCollateralAmount(wtx.tx->vout[i].nValue)) continue;
-                const COutPoint collateralOut(wtx.tx->GetHash(), i);
-                std::string strError;
-                if(fMasternodeMode && upgradeMan.isValidCollateral(collateralOut, strError)) continue;
+                if(fMasternodeMode && wtx.tx->vout[i].nValue == Params().GetConsensus().nMasternodeCollateral) continue;
                 // ignore outputs that are 10 times smaller then the smallest denomination
                 // otherwise they will just lead to higher fee / lower priority
                 if(wtx.tx->vout[i].nValue <= nSmallestDenom/10) continue;
@@ -3407,9 +3403,7 @@ bool CWallet::SelectPrivateCoins(CAmount nValueMin, CAmount nValueMax, std::vect
         if(out.tx->tx->vout[out.i].nValue < nValueMin/10) continue;
         //do not allow collaterals to be selected
         if(CPrivateSend::IsCollateralAmount(out.tx->tx->vout[out.i].nValue)) continue;
-        const COutPoint collateralOut(out.tx->tx->GetHash(), out.i);
-        std::string strError;
-        if(fMasternodeMode && upgradeMan.isValidCollateral(collateralOut, strError)) continue;
+        if(fMasternodeMode && out.tx->tx->vout[out.i].nValue == Params().GetConsensus().nMasternodeCollateral) continue; //masternode input
         if(nValueRet + out.tx->tx->vout[out.i].nValue <= nValueMax){
             CTxIn txin = CTxIn(out.tx->GetHash(),out.i);
 

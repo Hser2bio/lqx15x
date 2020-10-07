@@ -14,7 +14,6 @@
 #include "core_io.h"
 #include "init.h"
 #include "validation.h"
-#include "manager.h"
 #include "miner.h"
 #include "net.h"
 #include "policy/fees.h"
@@ -458,9 +457,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
-
-    if(!upgradeMan.isGbtAllowed())
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Upgrade manager has not authorized GBT usage");
 
     if(!g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
