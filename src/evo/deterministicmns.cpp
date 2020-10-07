@@ -665,9 +665,7 @@ bool CDeterministicMNManager::BuildNewListFromBlock(const CBlock& block, const C
             }
 
             Coin coin;
-            std::string strError;
-            if (!proTx.collateralOutpoint.hash.IsNull() && !upgradeMan.isValidCollateral(dmn->collateralOutpoint, strError)) {
-                LogPrintf("%s - %s\n", __func__, strError);
+            if (!proTx.collateralOutpoint.hash.IsNull() && (!GetUTXOCoin(dmn->collateralOutpoint, coin) || coin.out.nValue != Params().GetConsensus().nMasternodeCollateral)) {
                 // should actually never get to this point as CheckProRegTx should have handled this case.
                 // We do this additional check nevertheless to be 100% sure
                 return _state.DoS(100, false, REJECT_INVALID, "bad-protx-collateral");
@@ -953,10 +951,7 @@ bool CDeterministicMNManager::IsProTxWithCollateral(const CTransactionRef& tx, u
     if (proTx.collateralOutpoint.n >= tx->vout.size() || proTx.collateralOutpoint.n != n) {
         return false;
     }
-    std::string strError;
-    COutPoint collateralOut(proTx.collateralOutpoint.hash, proTx.collateralOutpoint.n);
-    if (!upgradeMan.isValidCollateral(collateralOut, strError)) {
-        LogPrintf("%s - %s\n", __func__, strError);
+    if (tx->vout[n].nValue != Params().GetConsensus().nMasternodeCollateral) {
         return false;
     }
     return true;

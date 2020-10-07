@@ -138,13 +138,7 @@ bool CheckProRegTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValid
 
     if (!ptx.collateralOutpoint.hash.IsNull()) {
         Coin coin;
-        if (!GetUTXOCoin(ptx.collateralOutpoint, coin)) {
-            return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral"); 
-        }
-
-        std::string strError;
-        if (!upgradeMan.isValidCollateral(ptx.collateralOutpoint, strError)) {
-            LogPrintf("%s - %s\n", __func__, strError);
+        if (!GetUTXOCoin(ptx.collateralOutpoint, coin) || coin.out.nValue != Params().GetConsensus().nMasternodeCollateral) {
             return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral");
         }
 
@@ -164,9 +158,7 @@ bool CheckProRegTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValid
             return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral-index");
         }
 
-        std::string strError;
-        if (!upgradeMan.isValidCollateral(ptx.collateralOutpoint, strError)) {
-            LogPrintf("%s - %s\n", __func__, strError);
+        if (tx.vout[ptx.collateralOutpoint.n].nValue != Params().GetConsensus().nMasternodeCollateral) {
             return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral");
         }
 
