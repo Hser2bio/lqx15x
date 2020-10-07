@@ -22,6 +22,20 @@ int UpgradeManager::revealInternalHeight() {
     return internalHeight;
 }
 
+int UpgradeManager::minProtocolActive() {
+    if (internalHeight >= forceDmnHeight)
+        return 70220;
+    return 70219;
+}
+
+bool UpgradeManager::keepExistingClient(int nVersion) {
+    int currentVersion = this->minProtocolActive();
+    if (internalHeight >= forceDmnHeight)
+        if (nVersion < currentVersion)
+            return false;
+    return true;
+}
+
 bool UpgradeManager::isDIP0008Active() {
     if (internalHeight >= forceDmnHeight)
         return true;

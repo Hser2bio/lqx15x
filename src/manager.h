@@ -4,22 +4,21 @@
 
 #include "util.h"
 
-class COutPoint;
 class UpgradeManager;
-
 extern UpgradeManager upgradeMan;
 
 class UpgradeManager {
 
   private:
 
-     //! height registers
      int internalHeight{0};
-     int forceDmnHeight{600000};
+     int forceDmnHeight{605000};
 
   public:
 
      void actionsAtBlockHeight(int nHeight);
      int revealInternalHeight();
+     bool keepExistingClient(int nHeight);
+     int minProtocolActive();
      bool isDIP0008Active();
 };
