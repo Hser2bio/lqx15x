@@ -501,4 +501,6 @@ void DumpMempool();
 /** Load the mempool from disk. */
 bool LoadMempool();
 
+bool isCollateralValidNow(const CBlockIndex* pindexPrev, CAmount proCollateral);
+
 #endif // BITCOIN_VALIDATION_H

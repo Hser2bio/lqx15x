@@ -4757,6 +4757,14 @@ double GuessVerificationProgress(const ChainTxData& data, CBlockIndex *pindex) {
     return pindex->nChainTx / fTxTotal;
 }
 
+//! Handle the logic for the collateral amount switchover
+bool isCollateralValidNow(const CBlockIndex* pindexPrev, CAmount proCollateral) {
+    int nHeight = pindexPrev->nHeight+1;
+    if (proCollateral == 1000 * COIN && nHeight < 605000) return true;
+    if (proCollateral == 10000 * COIN && nHeight >= 600000) return true;
+    return false;
+}
+
 class CMainCleanup
 {
 public:
