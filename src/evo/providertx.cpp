@@ -138,7 +138,7 @@ bool CheckProRegTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValid
 
     if (!ptx.collateralOutpoint.hash.IsNull()) {
         Coin coin;
-        if (!GetUTXOCoin(ptx.collateralOutpoint, coin) || coin.out.nValue != Params().GetConsensus().nMasternodeCollateral) {
+        if (!GetUTXOCoin(ptx.collateralOutpoint, coin) || !isCollateralValidNow(pindexPrev, coin.out.nValue)) {
             return state.DoS(10, false, REJECT_INVALID, "bad-protx-collateral");
         }
 
